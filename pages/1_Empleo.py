@@ -54,17 +54,12 @@ if buscar:
     progreso = st.empty()
     barra    = st.progress(0)
     total_pasos = len(palabras) * len(PORTALES)
-    paso = 0
-
-    resultados_acc = {}
-    total_ofertas  = 0
+    estado = {"paso": 0}
 
     def on_progreso(termino, portal, n):
-        nonlocal paso, total_ofertas
-        paso += 1
-        barra.progress(paso / total_pasos)
+        estado["paso"] += 1
+        barra.progress(estado["paso"] / total_pasos)
         progreso.caption(f"Buscando **{termino}** en {portal}…")
-        total_ofertas += n
 
     todos, _ = buscar_todo(palabras, callback=on_progreso)
 
