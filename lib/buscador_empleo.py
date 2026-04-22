@@ -174,7 +174,7 @@ def buscar_indeed(termino):
 
 def buscar_sepe(termino):
     url = (
-        f"https://empleo.sepe.es/portalEmpleo/servlet/ofertaServlet"
+        f"https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertas"
         f"?accion=buscarOfertas&palabraClave={quote_plus(termino)}"
         f"&provinciaOferta=&tipoJornada=&nivelEstudios="
         f"&numResultados={MAX_RESULTADOS}&pagina=1"
@@ -191,7 +191,7 @@ def buscar_sepe(termino):
                 empresa = limpiar_html(o.get("nombreEmpresa") or o.get("empresa", ""))
                 ciudad  = limpiar_html(o.get("localidad") or o.get("provincia", ""))
                 cod     = o.get("codOferta") or o.get("id", "")
-                url_of  = f"https://empleo.sepe.es/portalEmpleo/servlet/ofertaServlet?accion=verOferta&codOferta={cod}" if cod else ""
+                url_of  = f"https://sede.sepe.gob.es/portalEmpleo/flows/verOferta?accion=verOferta&codOferta={cod}" if cod else ""
                 if titulo:
                     resultados.append({
                         "titulo": titulo, "empresa": empresa, "ubicacion": ciudad,
@@ -218,7 +218,7 @@ def buscar_sepe(termino):
                 "titulo": titulo,
                 "empresa": empresas[i] if i < len(empresas) else "",
                 "ubicacion": ciudades[i] if i < len(ciudades) else "",
-                "url": href if href.startswith("http") else "https://empleo.sepe.es" + href,
+                "url": href if href.startswith("http") else "https://sede.sepe.gob.es" + href,
                 "portal": "SEPE",
             })
 
@@ -226,7 +226,7 @@ def buscar_sepe(termino):
         resultados.append({
             "titulo": f"Ver resultados de '{termino}' en SEPE",
             "empresa": "", "ubicacion": "España",
-            "url": f"https://empleo.sepe.es/portalEmpleo/servlet/ofertaServlet?accion=buscarOfertas&palabraClave={quote_plus(termino)}",
+            "url": f"https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertas?accion=buscarOfertas&palabraClave={quote_plus(termino)}",
             "portal": "SEPE",
         })
     return resultados
