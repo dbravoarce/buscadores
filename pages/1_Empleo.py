@@ -111,6 +111,6 @@ if buscar:
             st.markdown(
                 f"- [Infojobs](https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword={t})\n"
                 f"- [Indeed](https://es.indeed.com/jobs?q={t}&l=Espa%C3%B1a)\n"
-                f"- [SEPE](https://empleo.sepe.es/portalEmpleo/servlet/ofertaServlet?accion=buscarOfertas&palabraClave={t})\n"
+                f"- [SEPE](https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertas?accion=buscarOfertas&palabraClave={t})\n"
                 f"- [Tecnoempleo](https://www.tecnoempleo.com/busqueda-empleo.php?te={t})"
             )
