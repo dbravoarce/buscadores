@@ -173,63 +173,14 @@ def buscar_indeed(termino):
 
 
 def buscar_sepe(termino):
-    url = (
-        f"https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertas"
-        f"?accion=buscarOfertas&palabraClave={quote_plus(termino)}"
-        f"&provinciaOferta=&tipoJornada=&nivelEstudios="
-        f"&numResultados={MAX_RESULTADOS}&pagina=1"
-    )
-    html = fetch(url)
-    resultados = []
-
-    if html:
-        try:
-            data = json.loads(html)
-            ofertas = data.get("listaOfertas") or data.get("ofertas") or []
-            for o in ofertas[:MAX_RESULTADOS]:
-                titulo  = limpiar_html(o.get("denominacionOferta") or o.get("titulo", ""))
-                empresa = limpiar_html(o.get("nombreEmpresa") or o.get("empresa", ""))
-                ciudad  = limpiar_html(o.get("localidad") or o.get("provincia", ""))
-                cod     = o.get("codOferta") or o.get("id", "")
-                url_of  = f"https://sede.sepe.gob.es/portalEmpleo/flows/verOferta?accion=verOferta&codOferta={cod}" if cod else ""
-                if titulo:
-                    resultados.append({
-                        "titulo": titulo, "empresa": empresa, "ubicacion": ciudad,
-                        "url": url_of, "portal": "SEPE",
-                    })
-            if resultados:
-                return resultados
-        except (json.JSONDecodeError, ValueError):
-            pass
-
-        patron_titulo  = re.compile(r'class="[^"]*tituloOferta[^"]*"[^>]*>\s*<a[^>]*href="([^"]*)"[^>]*>(.*?)</a>', re.DOTALL | re.IGNORECASE)
-        patron_empresa = re.compile(r'class="[^"]*empresa[^"]*"[^>]*>(.*?)</[^>]+>', re.DOTALL | re.IGNORECASE)
-        patron_ciudad  = re.compile(r'class="[^"]*localidad[^"]*"[^>]*>(.*?)</[^>]+>', re.DOTALL | re.IGNORECASE)
-
-        titulos  = patron_titulo.findall(html)
-        empresas = [limpiar_html(e) for e in patron_empresa.findall(html)]
-        ciudades = [limpiar_html(c) for c in patron_ciudad.findall(html)]
-
-        for i, (href, tit) in enumerate(titulos[:MAX_RESULTADOS]):
-            titulo = limpiar_html(tit)
-            if not titulo:
-                continue
-            resultados.append({
-                "titulo": titulo,
-                "empresa": empresas[i] if i < len(empresas) else "",
-                "ubicacion": ciudades[i] if i < len(ciudades) else "",
-                "url": href if href.startswith("http") else "https://sede.sepe.gob.es" + href,
-                "portal": "SEPE",
-            })
-
-    if not resultados:
-        resultados.append({
-            "titulo": f"Ver resultados de '{termino}' en SEPE",
-            "empresa": "", "ubicacion": "España",
-            "url": f"https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertas?accion=buscarOfertas&palabraClave={quote_plus(termino)}",
-            "portal": "SEPE",
-        })
-    return resultados
+    # El SEPE bloquea el scraping automático — devuelve enlace directo para búsqueda manual
+    return [{
+        "titulo": f"Buscar '{termino}' en SEPE (enlace directo)",
+        "empresa": "",
+        "ubicacion": "España",
+        "url": f"https://sede.sepe.gob.es/portalEmpleo/flows/buscarOfertasEmpleo#!buscarOfertas?q={quote_plus(termino)}",
+        "portal": "SEPE",
+    }]
 
 
 def buscar_tecnoempleo(termino):
